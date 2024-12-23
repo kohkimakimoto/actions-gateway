@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -e -o pipefail
+
+if [[ -n "$ACTIONS_GATEWAY_ACTIONS_SPEC" ]]; then
+  # Print OpenAPI Spec
+  cat << 'EOF'
+summary: Open a URL
+description: |
+  This action receives a URL and opens it in the default browser.
+operationId: openURL
+x-openai-isConsequential: false
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          url:
+            type: string
+            description: The URL to open
+            example: "https://github.com"
+        required:
+          - url
+responses:
+  "200":
+    description: Success
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            opened_url:
+              type: string
+              description: The URL that was opened
+              example: "https://github.com"
+          required:
+            - opened_url
+EOF
+  exit 0
+fi
+
+if [ ! -p /dev/stdin ]; then
+  echo "This script is intended to be used with a pipe" >&2
+  exit 1
+fi
+
+input=$(cat -)
+url=$(echo "$input" | actions-gateway gojq -r '.url')
+
+# Check if the URL is valid
+if [[ ! $url =~ ^[a-zA-Z]+:// ]]; then
+  echo "Invalid URL: $url" >&2
+  exit 1
+fi
+
+open "$url"
+
+# Generate the response to STDOUT
+actions-gateway gojq -n --arg url "$url" '{"opened_url": $url}'
