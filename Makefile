@@ -126,7 +126,7 @@ release: guard-GITHUB_TOKEN ## Release the project with the specified version an
 	@$(MAKE) clean/build
 	@$(MAKE) build/server-frontend
 	@$(MAKE) build/dist
-	@ghr -b "Release v$(VERSION)" v$(VERSION) .dev/build/dist
+	@ghr -n "v$(VERSION)" -b "Release v$(VERSION)" v$(VERSION) .dev/build/dist
 
 
 # --------------------------------------------------------------------------------------
