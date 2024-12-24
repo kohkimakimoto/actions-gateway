@@ -80,7 +80,7 @@ Please visit the following URL:
 
 https://actions-gateway.kohkimakimoto.dev/new-token
 
-Click the "Generete new token" button in the web interface.
+Click the "Generate new token" button in the web interface.
 After getting the token, set it to the `token` key in the `config.toml` file.
 
 ```toml
